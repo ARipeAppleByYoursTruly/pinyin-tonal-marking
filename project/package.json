@@ -16,8 +16,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "pinyin-tonal-marking.helloWorld",
-        "title": "Hello World"
+        "command": "pinyin-tonal-marking.autoConversion_turnOn",
+        "title": "Pinyin Tonal Marking: Turn On Auto-Conversion",
+        "enablement": "!pinyin-tonal-marking.isAutoConversionTurnedOn"
+      },
+      {
+        "command": "pinyin-tonal-marking.autoConversion_turnOff",
+        "title": "Pinyin Tonal Marking: Turn Off Auto-Conversion",
+        "enablement": "pinyin-tonal-marking.isAutoConversionTurnedOn"
       }
     ]
   },
