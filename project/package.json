@@ -16,26 +16,36 @@
   "contributes": {
     "commands": [
       {
-        "command": "pinyin-tonal-marking.autoConversion_turnOn",
+        "command": "pinyinTonalMarking.autoConversion_turnOn",
         "title": "Pinyin Tonal Marking: Turn On Auto-Conversion",
-        "enablement": "!pinyin-tonal-marking.isAutoConversionTurnedOn"
+        "enablement": "!pinyinTonalMarking.isAutoConversionTurnedOn"
       },
       {
-        "command": "pinyin-tonal-marking.autoConversion_turnOff",
+        "command": "pinyinTonalMarking.autoConversion_turnOff",
         "title": "Pinyin Tonal Marking: Turn Off Auto-Conversion",
-        "enablement": "pinyin-tonal-marking.isAutoConversionTurnedOn"
+        "enablement": "pinyinTonalMarking.isAutoConversionTurnedOn"
       },
       {
-        "command": "pinyin-tonal-marking.performConversion_entireFile",
+        "command": "pinyinTonalMarking.performConversion_entireFile",
         "title": "Pinyin Tonal Marking: Perform Conversion on the Entire File",
         "enablement": "!editorHasSelection"
       },
       {
-        "command": "pinyin-tonal-marking.performConversion_selectedText",
+        "command": "pinyinTonalMarking.performConversion_selectedText",
         "title": "Pinyin Tonal Marking: Perform Conversion on the Selected Text",
         "enablement": "editorHasSelection"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Pinyin Tonal Marking",
+      "properties": {
+        "pinyinTonalMarking.enableAutoConversion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Turns on the auto-conversion while typing feature"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

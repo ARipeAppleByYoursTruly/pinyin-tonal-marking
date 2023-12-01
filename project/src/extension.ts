@@ -4,8 +4,9 @@ import * as vscode from 'vscode'
 
 // Constants
 // ===
-const EXTENSION_NAME = "pinyin-tonal-marking"
-const CONTEXT_NAME_isAutoConversionTurnedOn = `${EXTENSION_NAME}.isAutoConversionTurnedOn`
+const EXTENSION_NAME = "pinyinTonalMarking"
+const SETTINGS_NAME_enableAutoConversion = "enableAutoConversion"
+const CONTEXT_NAME_isAutoConversionTurnedOn = "isAutoConversionTurnedOn"
 
 
 
@@ -13,13 +14,11 @@ export function activate(context: vscode.ExtensionContext) {
   // Variables
   // ===
   let isApplyingEdit = false
-  let isAutoConversionTurnedOn: boolean
   let disposableListener: vscode.Disposable
 
-  updateState_isAutoConversionTurnedOn(context.globalState.get<boolean>(
-    CONTEXT_NAME_isAutoConversionTurnedOn,
-    true
-  ))
+  updateState_isAutoConversionTurnedOn(
+    vscode.workspace.getConfiguration(EXTENSION_NAME).get(SETTINGS_NAME_enableAutoConversion)!
+  )
 
 
 
@@ -30,9 +29,13 @@ export function activate(context: vscode.ExtensionContext) {
       updateState_isAutoConversionTurnedOn(true)
     }),
 
+
+
     vscode.commands.registerCommand(`${EXTENSION_NAME}.autoConversion_turnOff`, () => {
       updateState_isAutoConversionTurnedOn(false)
     }),
+
+
 
     vscode.commands.registerCommand(`${EXTENSION_NAME}.performConversion_entireFile`, () => {
       let document = vscode.window.activeTextEditor!.document
@@ -51,6 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
         isApplyingEdit = false
       })
     }),
+
+
 
     vscode.commands.registerCommand(`${EXTENSION_NAME}.performConversion_selectedText`, () => {
       let selectionRange = vscode.window.activeTextEditor!.selection.with()
@@ -145,13 +150,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 
   function updateState_isAutoConversionTurnedOn(value: boolean) {
-    isAutoConversionTurnedOn = value
-
-    context.globalState.update(CONTEXT_NAME_isAutoConversionTurnedOn, value)
+    vscode.workspace.getConfiguration().update(
+      `${EXTENSION_NAME}.${SETTINGS_NAME_enableAutoConversion}`,
+      value,
+      true
+    )
 
     vscode.commands.executeCommand(
       "setContext",
-      CONTEXT_NAME_isAutoConversionTurnedOn,
+      `${EXTENSION_NAME}.${CONTEXT_NAME_isAutoConversionTurnedOn}`,
       value
     )
 
