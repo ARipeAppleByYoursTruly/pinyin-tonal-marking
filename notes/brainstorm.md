@@ -15,6 +15,8 @@ Example:
 
   - Can be turned on or off using a command
 
-- Perform conversion on the selected text
+- Perform conversion manually
 
   - Triggered using a command
+
+  - Can perform conversion on the entire file, or only the selected text

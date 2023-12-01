@@ -12,7 +12,7 @@ const CONTEXT_NAME_isAutoConversionTurnedOn = `${EXTENSION_NAME}.isAutoConversio
 export function activate(context: vscode.ExtensionContext) {
   // Variables
   // ===
-  let isAutoConverting = false
+  let isApplyingEdit = false
   let isAutoConversionTurnedOn: boolean
   let disposableListener: vscode.Disposable
 
@@ -23,25 +23,52 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-
-
-
   // Commands
   // ===
   let disposables = [
-    vscode.commands.registerCommand("pinyin-tonal-marking.autoConversion_turnOn", () => {
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.autoConversion_turnOn`, () => {
       updateState_isAutoConversionTurnedOn(true)
     }),
 
-    vscode.commands.registerCommand("pinyin-tonal-marking.autoConversion_turnOff", () => {
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.autoConversion_turnOff`, () => {
       updateState_isAutoConversionTurnedOn(false)
+    }),
+
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.performConversion_entireFile`, () => {
+      let document = vscode.window.activeTextEditor!.document
+
+      isApplyingEdit = true
+
+      vscode.window.activeTextEditor?.edit((editBuilder) => {
+        editBuilder.replace(
+          new vscode.Range(
+            document.lineAt(0).range.start,
+            document.lineAt(document.lineCount - 1).range.end
+          ),
+          performConversion(document.getText())
+        )
+      }).then(() => {
+        isApplyingEdit = false
+      })
+    }),
+
+    vscode.commands.registerCommand(`${EXTENSION_NAME}.performConversion_selectedText`, () => {
+      let selectionRange = vscode.window.activeTextEditor!.selection.with()
+
+      isApplyingEdit = true
+
+      vscode.window.activeTextEditor?.edit((editBuilder) => {
+        editBuilder.replace(
+          selectionRange,
+          performConversion(vscode.window.activeTextEditor!.document.getText(selectionRange))
+        )
+      }).then(() => {
+        isApplyingEdit = false
+      })
     })
   ]
 
   context.subscriptions.push(...disposables)
-
-
-
 
 
 
@@ -122,10 +149,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.globalState.update(CONTEXT_NAME_isAutoConversionTurnedOn, value)
 
-    vscode.commands.executeCommand("setContext", CONTEXT_NAME_isAutoConversionTurnedOn, value)
-    vscode.window.setStatusBarMessage(
-      `Pinyin Tonal Marking: Auto-conversion has been turned ${value ? "on" : "off"}`,
-      5000
+    vscode.commands.executeCommand(
+      "setContext",
+      CONTEXT_NAME_isAutoConversionTurnedOn,
+      value
     )
 
     if (value) {
@@ -136,6 +163,11 @@ export function activate(context: vscode.ExtensionContext) {
         disposableListener.dispose()
       }
     }
+
+    vscode.window.setStatusBarMessage(
+      `Pinyin Tonal Marking: Auto-conversion has been turned ${value ? "on" : "off"}`,
+      5000
+    )
   }
 
 
@@ -146,7 +178,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (
       cursorPosition.character === 0 ||
       cursorPosition.character === 1 ||
-      isAutoConverting
+      isApplyingEdit
     ) {
       return
     }
@@ -162,12 +194,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-    isAutoConverting = true
+    isApplyingEdit = true
 
     vscode.window.activeTextEditor?.edit((editBuilder) => {
       editBuilder.replace(rangeBeforeCursor, performConversion(textBeforeCursor))
     }).then(() => {
-      isAutoConverting = false
+      isApplyingEdit = false
     })
   }
 }

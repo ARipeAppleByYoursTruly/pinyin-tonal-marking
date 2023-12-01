@@ -24,6 +24,16 @@
         "command": "pinyin-tonal-marking.autoConversion_turnOff",
         "title": "Pinyin Tonal Marking: Turn Off Auto-Conversion",
         "enablement": "pinyin-tonal-marking.isAutoConversionTurnedOn"
+      },
+      {
+        "command": "pinyin-tonal-marking.performConversion_entireFile",
+        "title": "Pinyin Tonal Marking: Perform Conversion on the Entire File",
+        "enablement": "!editorHasSelection"
+      },
+      {
+        "command": "pinyin-tonal-marking.performConversion_selectedText",
+        "title": "Pinyin Tonal Marking: Perform Conversion on the Selected Text",
+        "enablement": "editorHasSelection"
       }
     ]
   },
