@@ -70,7 +70,31 @@ export function activate(context: vscode.ExtensionContext) {
       }).then(() => {
         isApplyingEdit = false
       })
-    })
+    }),
+
+
+
+    vscode.commands.registerCommand(
+      `${EXTENSION_NAME}.performConversion_multipleSelectedText`,
+      () => {
+        console.log(vscode.window.activeTextEditor?.selections)
+
+        isApplyingEdit = true
+
+        vscode.window.activeTextEditor?.edit((editBuilder) => {
+          vscode.window.activeTextEditor!.selections.forEach((selection) => {
+            let selectionRange = selection.with()
+
+            editBuilder.replace(
+              selectionRange,
+              performConversion(vscode.window.activeTextEditor!.document.getText(selectionRange))
+            )
+          })
+        }).then(() => {
+          isApplyingEdit = false
+        })
+      }
+    )
   ]
 
   context.subscriptions.push(...disposables)
