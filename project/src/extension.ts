@@ -184,15 +184,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     if (
       cursorPosition.character === 0 ||
-      cursorPosition.character === 1 ||
-      isApplyingEdit
+      isApplyingEdit ||
+      event.reason !== undefined
     ) {
       return
     }
 
 
 
-    let rangeBeforeCursor = new vscode.Range(cursorPosition.translate(0, -2), cursorPosition)
+    let rangeBeforeCursor = new vscode.Range(
+      cursorPosition.translate(0, -1),
+      cursorPosition.translate(0, 1)
+    )
     let textBeforeCursor = event.document.getText(rangeBeforeCursor)
 
     if (textBeforeCursor.match(/^[aeiouv][12345]$/i) === null) {
