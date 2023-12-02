@@ -5,7 +5,7 @@ import * as vscode from 'vscode'
 // Constants
 // ===
 const EXTENSION_NAME = "pinyinTonalMarking"
-const SETTINGS_NAME_enableAutoConversion = "enableAutoConversion"
+const SETTINGS_NAME_turnOnAutoConversion = "turnOnAutoConversion"
 const CONTEXT_NAME_isAutoConversionTurnedOn = "isAutoConversionTurnedOn"
 
 
@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   let disposableListener: vscode.Disposable
 
   updateState_isAutoConversionTurnedOn(
-    vscode.workspace.getConfiguration(EXTENSION_NAME).get(SETTINGS_NAME_enableAutoConversion)!
+    vscode.workspace.getConfiguration(EXTENSION_NAME).get(SETTINGS_NAME_turnOnAutoConversion)!
   )
 
 
@@ -175,7 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   function updateState_isAutoConversionTurnedOn(value: boolean) {
     vscode.workspace.getConfiguration().update(
-      `${EXTENSION_NAME}.${SETTINGS_NAME_enableAutoConversion}`,
+      `${EXTENSION_NAME}.${SETTINGS_NAME_turnOnAutoConversion}`,
       value,
       true
     )
