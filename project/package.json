@@ -1,4 +1,5 @@
 {
+  "icon": "images/icon.webp",
   "name": "pinyin-tonal-marking",
   "displayName": "Pinyin Tonal Marking",
   "description": "Converts commonly used tonal marking format to their Unicode counterparts",
