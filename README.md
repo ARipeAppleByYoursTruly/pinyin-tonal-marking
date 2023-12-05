@@ -15,6 +15,10 @@ For example:
 
 <!-- Include animation of typing nihao shijie -->
 
+Multi-caret editing is also supported
+
+<!-- Include animation of typing with multiple cursors -->
+
 This can be turned on or off using commands
 
 <!-- Include animation of typing a1a2a3a4 with auto-conversion turned on and off -->
