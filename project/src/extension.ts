@@ -204,25 +204,38 @@ export function activate(context: vscode.ExtensionContext) {
 
 
   function autoConversionListener(event: vscode.TextDocumentChangeEvent) {
-    let cursorPosition = vscode.window.activeTextEditor?.selection.active!
+    let edits = vscode.window.activeTextEditor!.selections.map((selection) => {
+      let cursorPosition = selection.active
 
-    if (
-      cursorPosition.character === 0 ||
-      isApplyingEdit ||
-      event.reason !== undefined
-    ) {
-      return
-    }
+      if (
+        cursorPosition.character === 0 ||
+        isApplyingEdit ||
+        event.reason !== undefined
+      ) {
+        return
+      }
 
 
 
-    let rangeBeforeCursor = new vscode.Range(
-      cursorPosition.translate(0, -1),
-      cursorPosition.translate(0, 1)
-    )
-    let textBeforeCursor = event.document.getText(rangeBeforeCursor)
+      let rangeBeforeCursor = new vscode.Range(
+        cursorPosition.translate(0, -1),
+        cursorPosition.translate(0, 1)
+      )
+      let textBeforeCursor = event.document.getText(rangeBeforeCursor)
 
-    if (textBeforeCursor.match(/^[aeiouv][12345]$/i) === null) {
+      if (textBeforeCursor.match(/^[aeiouv][12345]$/i) === null) {
+        return
+      }
+
+
+
+      return {
+        range: rangeBeforeCursor,
+        convertedText: performConversion(textBeforeCursor)
+      }
+    }).filter((edit) => edit !== undefined)
+
+    if (edits.length === 0) {
       return
     }
 
@@ -231,7 +244,9 @@ export function activate(context: vscode.ExtensionContext) {
     isApplyingEdit = true
 
     vscode.window.activeTextEditor?.edit((editBuilder) => {
-      editBuilder.replace(rangeBeforeCursor, performConversion(textBeforeCursor))
+      edits.forEach((edit) => {
+        editBuilder.replace(edit!.range, edit!.convertedText)
+      })
     }).then(() => {
       isApplyingEdit = false
     })

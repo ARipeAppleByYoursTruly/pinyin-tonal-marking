@@ -15,6 +15,8 @@ Example:
 
   - Can be turned on or off using a command
 
+  - Supports multiple cursor edits
+
 - Perform conversion manually
 
   - Triggered using a command
